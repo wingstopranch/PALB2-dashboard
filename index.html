@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancer Risk Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Cancer Risk and Management Dashboard</h1>
+    <div id="filters">
+        <label for="ageFilter">Filter by Age Range:</label>
+        <select id="ageFilter">
+            <option value="">All</option>
+            <option value="Starting at the age of 30">Starting at the age of 30</option>
+            <option value="after menopause">After Menopause</option>
+            <option value=">50, if family history exists">>50, if family history exists</option>
+        </select>
+
+        <label for="managementFilter">Filter by Management:</label>
+        <select id="managementFilter">
+            <option value="">All</option>
+            <option value="Mammogram, tomosynthesis, MRI with contrast; risk-reducing mastectomy as per patient preference">Mammogram, MRI</option>
+            <option value="Pancreatic cancer surveillance (MRI, MRCP, EUS)">Pancreatic Cancer Surveillance</option>
+            <option value="None recommended">None Recommended</option>
+        </select>
+
+        <button id="exportBtn">Export to CSV</button>
+    </div>
+
+    <div id="dashboard">
+        <canvas id="riskChart"></canvas>
+        <table id="riskTable">
+            <thead>
+                <tr>
+                    <th>Cancer Type</th>
+                    <th>Risk</th>
+                    <th>Management Options</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
