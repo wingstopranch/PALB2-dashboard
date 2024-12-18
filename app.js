@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-    let originalData = []; // Store the original dataset
-    let filteredData = []; // Store the filtered dataset
+    let originalData = [];
+    let filteredData = [];
 
     // Load JSON Data
     fetch("annotations_output.json")
@@ -20,10 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(error => console.error("Error loading JSON file:", error));
 
-    // Function to create the table
+    // Create Table
     function createTable(data) {
         const tbody = document.querySelector("#riskTable tbody");
-        tbody.innerHTML = ""; // Clear table content
+        tbody.innerHTML = "";
 
         if (data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No matching results</td></tr>`;
@@ -41,18 +41,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Function to create the chart
+    // Create Chart
     function createChart(data) {
         const ctx = document.getElementById("riskChart").getContext("2d");
-
         const labels = data.map(item => item.Cancer);
         const risks = data.map(item => {
             const match = item.Risk.match(/(\d+\.?\d*)/);
-            return match ? parseFloat(match[0]) : 0; // Extract numbers from Risk
+            return match ? parseFloat(match[0]) : 0;
         });
 
         if (window.riskChart) {
-            window.riskChart.destroy(); // Destroy previous chart instance
+            window.riskChart.destroy(); // Destroy previous chart instance if it exists
         }
 
         window.riskChart = new Chart(ctx, {
@@ -78,49 +77,40 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Function to setup the filter button
+    // Setup Filters
     function setupFilters() {
+        const cancerFilter = document.getElementById("cancerFilter");
         const ageFilter = document.getElementById("ageFilter");
         const managementFilter = document.getElementById("managementFilter");
         const filterBtn = document.getElementById("filterBtn");
 
         function applyFilters() {
+            const cancerValue = cancerFilter.value.trim().toLowerCase();
             const ageValue = ageFilter.value.trim().toLowerCase();
             const managementValue = managementFilter.value.trim().toLowerCase();
 
             filteredData = originalData.filter(item => {
-                const ageMatch = ageValue === "" || (item.Age_Range_of_Management && item.Age_Range_of_Management.trim().toLowerCase() === ageValue);
-                const managementMatch = managementValue === "" || (item.Medical_Actions_Management && item.Medical_Actions_Management.trim().toLowerCase() === managementValue);
-                return ageMatch && managementMatch;
+                const cancerMatch = cancerValue === "" || item.Cancer.trim().toLowerCase() === cancerValue;
+                const ageMatch = ageValue === "" || item.Age_Range_of_Management.trim().toLowerCase() === ageValue;
+                const managementMatch = managementValue === "" || item.Medical_Actions_Management.trim().toLowerCase() === managementValue;
+
+                return cancerMatch && ageMatch && managementMatch;
             });
 
-            if (filteredData.length > 0) {
-                createTable(filteredData);
-                createChart(filteredData);
-            } else {
-                clearTableAndChart();
-            }
+            createTable(filteredData);
+            createChart(filteredData);
         }
 
         filterBtn.addEventListener("click", applyFilters);
     }
 
-    // Clear table and chart if no data matches
-    function clearTableAndChart() {
-        const tbody = document.querySelector("#riskTable tbody");
-        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No matching results</td></tr>`;
-        if (window.riskChart) {
-            window.riskChart.destroy();
-        }
-    }
-
-    // Function to export filtered data to CSV
+    // Export to CSV
     function setupExport() {
         const exportBtn = document.getElementById("exportBtn");
 
         exportBtn.addEventListener("click", () => {
             const csvContent = [
-                ["Cancer Type", "Risk", "Management Options"], // CSV header
+                ["Cancer Type", "Risk", "Management Options"],
                 ...filteredData.map(item => [
                     item.Cancer,
                     item.Risk,
