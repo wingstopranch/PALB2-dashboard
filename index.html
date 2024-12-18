@@ -8,23 +8,32 @@
 </head>
 <body>
     <h1>Cancer Risk and Management Dashboard</h1>
-    
+
     <!-- Filters -->
     <div id="filters">
+        <label for="cancerFilter">Filter by Cancer Type:</label>
+        <select id="cancerFilter">
+            <option value="">All</option>
+            <option value="Breast Cancer">Breast Cancer</option>
+            <option value="Ovarian Cancer">Ovarian Cancer</option>
+            <option value="Pancreatic Cancer">Pancreatic Cancer</option>
+            <option value="Prostate Cancer">Prostate Cancer</option>
+            <option value="Childhood Cancers">Childhood Cancers</option>
+        </select>
+
         <label for="ageFilter">Filter by Age Range:</label>
         <select id="ageFilter">
             <option value="">All</option>
             <option value="Starting at the age of 30">Starting at the age of 30</option>
             <option value="after menopause">After Menopause</option>
             <option value="Childhood onset">Childhood Onset</option>
-            <option value=">50, if family history exists">>50, if family history exists</option>
         </select>
 
         <label for="managementFilter">Filter by Management:</label>
         <select id="managementFilter">
             <option value="">All</option>
-            <option value="Mammogram, tomosynthesis, MRI with contrast; risk-reducing bilateral mastectomy">Mammogram, tomosynthesis, MRI</option>
-            <option value="Pancreatic cancer surveillance (MRI, MRCP, EUS), ideally as part of a clinical trial">Pancreatic Cancer Surveillance</option>
+            <option value="Mammogram, tomosynthesis, MRI with contrast; risk-reducing bilateral mastectomy">Mammogram, MRI</option>
+            <option value="Pancreatic cancer surveillance (MRI, MRCP, EUS), ideally as part of a clinical trial">Pancreatic Surveillance</option>
             <option value="None recommended">None Recommended</option>
         </select>
 
