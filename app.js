@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(error => console.error("Error loading JSON file:", error));
 
-    // Create Table
+    // Function to create the table
     function createTable(data) {
         const tbody = document.querySelector("#riskTable tbody");
         tbody.innerHTML = "";
@@ -41,17 +41,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Create Chart
+    // Function to create the chart
     function createChart(data) {
         const ctx = document.getElementById("riskChart").getContext("2d");
         const labels = data.map(item => item.Cancer);
         const risks = data.map(item => {
             const match = item.Risk.match(/(\d+\.?\d*)/);
-            return match ? parseFloat(match[0]) : 0;
+            return match ? parseFloat(match[0]) : 0; // Extract numbers from Risk
         });
 
-        if (window.riskChart) {
-            window.riskChart.destroy(); // Destroy previous chart instance if it exists
+        // Check if the chart exists before destroying
+        if (window.riskChart && typeof window.riskChart.destroy === "function") {
+            window.riskChart.destroy();
         }
 
         window.riskChart = new Chart(ctx, {
@@ -67,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }]
             },
             options: {
+                responsive: true,
                 scales: {
                     y: {
                         beginAtZero: true,
@@ -77,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Setup Filters
+    // Function to setup filters
     function setupFilters() {
         const cancerFilter = document.getElementById("cancerFilter");
         const ageFilter = document.getElementById("ageFilter");
@@ -104,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
         filterBtn.addEventListener("click", applyFilters);
     }
 
-    // Export to CSV
+    // Function to export filtered data to CSV
     function setupExport() {
         const exportBtn = document.getElementById("exportBtn");
 
