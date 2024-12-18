@@ -17,10 +17,10 @@ h1 {
 #filters {
     display: flex;
     gap: 15px;
-    margin-bottom: 20px;
-    justify-content: center;
-    align-items: center;
     flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+    align-items: center;
 }
 
 #filters label {
@@ -30,10 +30,11 @@ h1 {
 
 #filters select, #filters button {
     padding: 8px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
     cursor: pointer;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 #filters button {
@@ -76,12 +77,13 @@ tr:hover {
     background-color: #f1f9ff;
 }
 
-/* No Results Message */
+/* "No Matching Results" Message */
 .no-results {
     text-align: center;
     font-weight: bold;
     color: #d9534f;
     font-size: 16px;
+    padding: 12px 0;
 }
 
 /* Chart */
@@ -93,4 +95,21 @@ canvas {
     border-radius: 4px;
     background-color: #fff;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    #filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #filters label, #filters select, #filters button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    table {
+        font-size: 12px;
+    }
 }
