@@ -78,10 +78,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Function to setup filters
+    // Function to setup the filter button
     function setupFilters() {
         const ageFilter = document.getElementById("ageFilter");
         const managementFilter = document.getElementById("managementFilter");
+        const filterBtn = document.getElementById("filterBtn");
 
         function applyFilters() {
             const ageValue = ageFilter.value.trim().toLowerCase();
@@ -93,12 +94,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 return ageMatch && managementMatch;
             });
 
-            createTable(filteredData);
-            createChart(filteredData);
+            if (filteredData.length > 0) {
+                createTable(filteredData);
+                createChart(filteredData);
+            } else {
+                clearTableAndChart();
+            }
         }
 
-        ageFilter.addEventListener("change", applyFilters);
-        managementFilter.addEventListener("change", applyFilters);
+        filterBtn.addEventListener("click", applyFilters);
+    }
+
+    // Clear table and chart if no data matches
+    function clearTableAndChart() {
+        const tbody = document.querySelector("#riskTable tbody");
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No matching results</td></tr>`;
+        if (window.riskChart) {
+            window.riskChart.destroy();
+        }
     }
 
     // Function to export filtered data to CSV
