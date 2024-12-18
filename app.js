@@ -4,7 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Load JSON data
     fetch("annotations_output.json")
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             originalData = data;
             filteredData = [...originalData]; // Initialize filtered data
@@ -12,9 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
             createChart(filteredData);
             setupFilters();
             setupExport();
-        });
+        })
+        .catch(error => console.error("Error loading JSON file:", error));
 
-    // Create Table
+    // Function to create the data table
     function createTable(data) {
         const tbody = document.querySelector("#riskTable tbody");
         tbody.innerHTML = ""; // Clear existing data
@@ -29,19 +35,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Create Bar Chart
+    // Function to create the bar chart
     function createChart(data) {
         const ctx = document.getElementById("riskChart").getContext("2d");
+
         const labels = data.map(item => item.Cancer);
         const risks = data.map(item => {
-            const match = item.Risk.match(/(\d+)/);
-            return match ? parseFloat(match[0]) : 0; // Extract percentage as number
+            // Extract numerical percentage from Risk field (e.g., "53% risk by age 80")
+            const match = item.Risk.match(/(\d+\.?\d*)/);
+            return match ? parseFloat(match[0]) : 0;
         });
 
+        // Destroy the previous chart instance if it exists
         if (window.riskChart) {
-            window.riskChart.destroy(); // Destroy previous chart instance
+            window.riskChart.destroy();
         }
 
+        // Create the new chart
         window.riskChart = new Chart(ctx, {
             type: "bar",
             data: {
@@ -65,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Setup Filters
+    // Setup filters for Age Range and Management Options
     function setupFilters() {
         const ageFilter = document.getElementById("ageFilter");
         const managementFilter = document.getElementById("managementFilter");
@@ -84,13 +94,13 @@ document.addEventListener("DOMContentLoaded", () => {
         managementFilter.addEventListener("change", applyFilters);
     }
 
-    // Setup Export
+    // Function to export filtered data to CSV
     function setupExport() {
         const exportBtn = document.getElementById("exportBtn");
 
         exportBtn.addEventListener("click", () => {
             const csvContent = [
-                ["Cancer Type", "Risk", "Management Options"],
+                ["Cancer Type", "Risk", "Management Options"], // Header row
                 ...filteredData.map(item => [
                     item.Cancer,
                     item.Risk,
