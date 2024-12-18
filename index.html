@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Updated Cancer Risk Dashboard</title>
+    <title>Cancer Risk and Management Dashboard</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Cancer Risk and Management Dashboard</h1>
+    
+    <!-- Filters -->
     <div id="filters">
         <label for="ageFilter">Filter by Age Range:</label>
         <select id="ageFilter">
@@ -21,7 +23,7 @@
         <label for="managementFilter">Filter by Management:</label>
         <select id="managementFilter">
             <option value="">All</option>
-            <option value="Mammogram, tomosynthesis, MRI with contrast; risk-reducing bilateral mastectomy">Mammogram, MRI</option>
+            <option value="Mammogram, tomosynthesis, MRI with contrast; risk-reducing bilateral mastectomy">Mammogram, tomosynthesis, MRI</option>
             <option value="Pancreatic cancer surveillance (MRI, MRCP, EUS), ideally as part of a clinical trial">Pancreatic Cancer Surveillance</option>
             <option value="None recommended">None Recommended</option>
         </select>
@@ -29,6 +31,7 @@
         <button id="exportBtn">Export to CSV</button>
     </div>
 
+    <!-- Chart and Table -->
     <div id="dashboard">
         <canvas id="riskChart"></canvas>
         <table id="riskTable">
