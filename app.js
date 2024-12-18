@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
     let originalData = []; // Store the original dataset
-    let filteredData = []; // Store the currently filtered dataset
+    let filteredData = []; // Store the filtered dataset
 
-    // Load JSON data
+    // Load JSON Data
     fetch("annotations_output.json")
         .then(response => {
             if (!response.ok) {
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(data => {
             originalData = data;
-            filteredData = [...originalData]; // Initialize filtered data
+            filteredData = [...originalData];
             createTable(filteredData);
             createChart(filteredData);
             setupFilters();
@@ -20,10 +20,16 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(error => console.error("Error loading JSON file:", error));
 
-    // Function to create the data table
+    // Function to create the table
     function createTable(data) {
         const tbody = document.querySelector("#riskTable tbody");
-        tbody.innerHTML = ""; // Clear existing data
+        tbody.innerHTML = ""; // Clear table content
+
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No matching results</td></tr>`;
+            return;
+        }
+
         data.forEach(item => {
             const row = document.createElement("tr");
             row.innerHTML = `
@@ -35,23 +41,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Function to create the bar chart
+    // Function to create the chart
     function createChart(data) {
         const ctx = document.getElementById("riskChart").getContext("2d");
 
         const labels = data.map(item => item.Cancer);
         const risks = data.map(item => {
-            // Extract numerical percentage from Risk field (e.g., "53% risk by age 80")
             const match = item.Risk.match(/(\d+\.?\d*)/);
-            return match ? parseFloat(match[0]) : 0;
+            return match ? parseFloat(match[0]) : 0; // Extract numbers from Risk
         });
 
-        // Destroy the previous chart instance if it exists
         if (window.riskChart) {
-            window.riskChart.destroy();
+            window.riskChart.destroy(); // Destroy previous chart instance
         }
 
-        // Create the new chart
         window.riskChart = new Chart(ctx, {
             type: "bar",
             data: {
@@ -75,17 +78,21 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Setup filters for Age Range and Management Options
+    // Function to setup filters
     function setupFilters() {
         const ageFilter = document.getElementById("ageFilter");
         const managementFilter = document.getElementById("managementFilter");
 
         function applyFilters() {
+            const ageValue = ageFilter.value.trim().toLowerCase();
+            const managementValue = managementFilter.value.trim().toLowerCase();
+
             filteredData = originalData.filter(item => {
-                const ageMatch = ageFilter.value === "" || item.Age_Range_of_Management === ageFilter.value;
-                const managementMatch = managementFilter.value === "" || item.Medical_Actions_Management === managementFilter.value;
+                const ageMatch = ageValue === "" || (item.Age_Range_of_Management && item.Age_Range_of_Management.trim().toLowerCase() === ageValue);
+                const managementMatch = managementValue === "" || (item.Medical_Actions_Management && item.Medical_Actions_Management.trim().toLowerCase() === managementValue);
                 return ageMatch && managementMatch;
             });
+
             createTable(filteredData);
             createChart(filteredData);
         }
@@ -100,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         exportBtn.addEventListener("click", () => {
             const csvContent = [
-                ["Cancer Type", "Risk", "Management Options"], // Header row
+                ["Cancer Type", "Risk", "Management Options"], // CSV header
                 ...filteredData.map(item => [
                     item.Cancer,
                     item.Risk,
