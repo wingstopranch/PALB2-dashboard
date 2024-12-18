@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     let originalData = [];
     let filteredData = [];
+    window.riskChart = null; // Initialize riskChart to null
 
     // Load JSON Data
     fetch("annotations_output.json")
@@ -50,11 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
             return match ? parseFloat(match[0]) : 0; // Extract numbers from Risk
         });
 
-        // Check if the chart exists before destroying
-        if (window.riskChart && typeof window.riskChart.destroy === "function") {
+        // Destroy previous chart instance if it exists
+        if (window.riskChart) {
             window.riskChart.destroy();
         }
 
+        // Create new chart
         window.riskChart = new Chart(ctx, {
             type: "bar",
             data: {
